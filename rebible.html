@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -7,194 +8,334 @@
   <style>
     body {
       margin: 0;
-      font-family: 'Noto Sans KR', sans-serif;
+      font-family: 'PAPERLOGY', sans-serif;
       background-color: #000;
       color: white;
-      text-align: center;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 40px;
-      color: #e62e2e;
-      font-weight: bold;
-      font-size: 24px;
-    }
-
-    nav {
-      display: flex;
-      justify-content: center;
-      margin: 20px auto;
-    }
-
-    nav button {
-      background-color: #1c2633;
-      color: white;
-      border: none;
-      padding: 15px 50px;
-      margin: 0 5px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: 0.2s;
-    }
-
-    nav button:hover {
-      background-color: #e62e2e;
-    }
-
-    nav button.active {
-      background-color: #e62e2e;
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
     }
 
     section {
-      display: none;
-      padding: 50px 0;
-      line-height: 1.7;
-    }
-
-    section.active {
-      display: block;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      scroll-snap-align: start;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     h2 {
       color: #e62e2e;
-      font-size: 40px;
+      font-size: 36px;
       margin-bottom: 20px;
     }
 
-    /* 포스터 이미지 영역 */
-    .poster-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 40px;
-      margin-bottom: 60px;
-    }
+    /* 공연 안내 */
+    .info-section { display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .info-container { display: flex; width: 90%; max-width: 1200px; gap: 30px; }
+    .poster-side img { width: 100%; max-width: 500px; border-radius: 10px; object-fit: contain; }
+    .details-side { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .info-box { background-color: #1c2633; padding: 20px; border-radius: 10px; }
+    .info-box h3 { color: #e62e2e; margin-bottom: 10px; }
+    .notice-box { background-color: #1c1c1c; border: 2px solid #e62e2e; border-radius: 10px; padding: 20px; }
+    .notice-box h3 { color: #e62e2e; margin-bottom: 15px; }
+    .notice-box ul { list-style: none; padding: 0; margin: 0; }
+    .notice-box li { margin-bottom: 10px; line-height: 1.6; }
 
-    .poster-container img {
-      width: 80%;
-      max-width: 600px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
-    }
+    /* 줄거리 */
+  .story { text-align: center; padding: 40px; overflow-y: auto; }
+  .story .subtitle { font-size: 20px; color: #e62e2e; margin-bottom: 20px; }
+  .story .description { max-width: 800px; line-height: 1.8; margin-bottom: 30px; }
+  .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 80%; margin-top: 20px; }
+  .image-grid img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 10px; }
 
+    /* 영상 섹션 */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.video-grid video {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  background: #000;
+  position: relative;
+  z-index: 10;
+}
+
+
+    /* 출연진 */
+    .cast-section { display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 20px; overflow-y: auto; }
+    .cast { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; max-width: 90%; }
+    .cast-card { background-color: #1c2633; padding: 10px; border-radius: 10px; width: 150px; text-align: center; }
+    .cast-card img { width: 100%; border-radius: 10px; }
+
+    /* 반응형 */
     @media (max-width: 768px) {
-      .poster-container img {
-        width: 90%;
-      }
+      .info-container { flex-direction: column; align-items: center; }
+      .poster-side img { max-width: 90%; }
+      .video-grid video { height: auto; }
     }
 
-    /* 후원 안내 영역 */
-    .donation {
-      background-color: #111;
-      margin-top: 50px;
-      padding: 30px;
-      border-radius: 15px;
-      display: inline-block;
-      text-align: left;
-      max-width: 600px;
-      line-height: 1.8;
+    /* 챗봇 UI (원본 유지) */
+    .rebible-chat-toggle {
+      position: fixed; right: 24px; bottom: 24px;
+      background:#e62e2e; color:#fff; border:none; border-radius:24px;
+      padding:12px 16px; font-size:14px; cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,.3);
+      z-index:9999;
     }
-
-    .donation h3 {
-      color: #e62e2e;
-      margin-bottom: 15px;
+    .rebible-chatbox {
+      position: fixed; right:24px; bottom:80px; width:340px; max-width:90vw; height:460px;
+      background:#1c2633; color:#fff; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.35);
+      display:none; flex-direction:column; overflow:hidden; z-index:9999;
     }
-
-    .donation p {
-      margin: 5px 0;
+    .rebible-chatbox header { background:#0f1722; padding:12px 14px; font-weight:600; display:flex; justify-content:space-between; align-items:center; }
+    .rebible-chatbox header .title { display:flex; gap:8px; align-items:center; }
+    .rebible-chatbox header .title span.dot { width:8px; height:8px; background:#35c46d; border-radius:50%; display:inline-block; }
+    .rebible-chatbox .messages { flex:1; overflow-y:auto; padding:12px; gap:10px; display:flex; flex-direction:column; }
+    .rebible-chatbox .msg { padding:10px 12px; border-radius:10px; line-height:1.5; max-width:85%; word-break:break-word; }
+    .rebible-chatbox .msg.user { background:#233044; align-self:flex-end; }
+    .rebible-chatbox .msg.bot { background:#111820; align-self:flex-start; }
+    .rebible-chatbox .input { display:flex; gap:8px; padding:12px; background:#0f1722; }
+    .rebible-chatbox input[type="text"] { flex:1; background:#0b1220; color:#fff; border:1px solid #263246; border-radius:10px; padding:10px; }
+    .rebible-chatbox button.send { background:#e62e2e; color:#fff; border:none; border-radius:10px; padding:8px 12px; cursor:pointer; }
+    .rebible-suggestion { display:flex; gap:6px; flex-wrap:wrap; padding:8px 12px; background:#111820; }
+    .rebible-suggestion button {
+      background:#233044; color:#fff; border:none; border-radius:16px; padding:6px 10px; cursor:pointer; font-size:12px;
     }
-
-    /* 계좌번호 강조 */
-    .account {
-      font-weight: bold;
-      color: #ffd84a;
-      font-size: 1.4em;
-      text-align: center;
-      margin-top: 15px;
+    .rebible-cta a {
+      color:#fff; background:#e62e2e; text-decoration:none; padding:6px 10px; border-radius:10px; display:inline-block;
     }
-
-    .photo-grid img {
-      width: 200px;
-      margin: 10px;
-      border-radius: 10px;
-    }
-
-    video {
-      width: 60%;
-      border-radius: 10px;
-      margin-top: 20px;
+    @media (max-width:480px) {
+      .rebible-chatbox { width:95vw; right:2.5vw; bottom:84px; }
     }
   </style>
 </head>
+
 <body>
-  <header>
-    <div>MUSICAL</div>
-    <div>REBIBLE</div>
-  </header>
 
-  <nav>
-    <button class="active" onclick="showSection('home', this)">홈</button>
-    <button onclick="showSection('making', this)">메이킹 포토</button>
-    <button onclick="showSection('video', this)">연습 영상</button>
-  </nav>
+  <!-- 1. 통합 공연 안내 -->
+  <section class="info-section">
+    <div class="info-container">
+      <!-- 왼쪽: 포스터 -->
+      <div class="poster-side">
+        <img src="poster1.jpg" alt="뮤지컬 포스터">
+      </div>
 
-  <section id="home" class="active">
-    <h2>너를 향한 하나님의 계획</h2>
-    <p>“두려워 마세요. 우리를 이곳으로 보낸 건 하나님의 큰 뜻이니.”</p>
-    <p>뮤지컬 리바이벌은 신앙, 용서, 회복의 메시지를 전하는 창작 뮤지컬입니다.</p>
+      <!-- 오른쪽: 공연 안내 + 중요 안내사항 -->
+      <div class="details-side">
+        <div class="info-grid">
+          <div class="info-box"><h3>공연 일시</h3><p>2025년 11월 12일 (수)<br>19:30</p></div>
+          <div class="info-box"><h3>공연 장소</h3><p>서울신학대학교 존토마스홀</p></div>
+          <div class="info-box"><h3>티켓 가격</h3><p>무료 (예매 필수)</p></div>
+          <div class="info-box"><h3>예매 방법</h3><p>인스타그램 링크트리<br>@rebible_musical</p></div>
+        </div>
 
-    <!-- 포스터 이미지 두 장 -->
-    <div class="poster-container">
-      <img src="poster1.jpg" alt="뮤지컬 리바이벌 시놉시스 포스터">
-      <img src="poster2.jpg" alt="뮤지컬 리바이벌 공연 안내 포스터">
-    </div>
-
-    <!-- 후원 안내 -->
-    <div class="donation">
-      <h3>🎁 공연 후원 안내</h3>
-      <p>원활한 공연 제작을 위해 후원금 모금을 진행중입니다.</p>
-      <p>목표 금액은 <strong>600,000원</strong>이며,</p>
-      <p>1,000원부터 자유롭게 후원으로 동참해주신다면 감사드리겠습니다.</p>
-      <p>더 좋은 공연과 예배가 될 수 있도록 최선을 다해 준비하겠습니다.</p>
-      <p>당신의 작은 손길이, 복음의 씨앗을 심습니다.</p>
-      <p class="account">💳 카카오뱅크 7979-94-99515 (장하영)</p>
+        <div class="notice-box">
+          <h3>⚠ 중요 안내사항</h3>
+          <ul>
+            <li>공연 시작 후 입장이 불가합니다.</li>
+            <li>공연 시작 20분 전까지 도착 부탁드립니다.</li>
+            <li>예매 가격은 무료이나, 사전 예매는 필수입니다.</li>
+            <li>예매 방법: 인스타그램 @rebible_musical 또는 링크트리, QR코드 이용</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section id="making">
-    <h2>메이킹 포토</h2>
-    <div class="photo-grid">
-      <img src="photo1.jpg" alt="연습 사진 1">
-      <img src="photo2.jpg" alt="연습 사진 2">
-      <img src="photo3.jpg" alt="연습 사진 3">
-    </div>
+  <!-- 2. 줄거리 -->
+  <section class="story">
+    <h2>시놉시스</h2>
+    <p class="description">
+      당신의 고난은 실패가 아니라, 하나님이 쓰실 이야기의 시작입니다.
+      형제들의 시기로 버려지고 억울한 누명으로 감옥에 갇힌 요셉.
+      끝없는 추락 같던 그의 인생 속에서도 하나님은 멈추지 않으셨습니다.
+      그분은 모든 악을 선으로 바꾸시며, 요셉을 수많은 생명을 구원하는 사람으로 세우셨습니다.
+      이 작품은 우리의 고난조차 정금같이 빚어내시는 하나님의 손길을 노래합니다.
+      지금의 눈물은 헛되지 않습니다. 그분의 계획은 언제나 완전합니다.
+    </p>
+    <section class="video">
+  <iframe 
+    src="https://www.youtube.com/embed/hSMZ3utH8ww" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+  </iframe>
+</section>
   </section>
 
-  <section id="video">
-    <h2>연습 영상</h2>
-    <video controls>
-      <source src="practice.mp4" type="video/mp4">
-      브라우저가 영상을 지원하지 않습니다.
+<section>
+  <h2>뮤지컬 티저 영상</h2>
+  <video autoplay muted loop playsinline controls>
+      <source src="videos/teaser.mp4" type="video/mp4">
+  </video>
+</section>
+
+<!-- 3. 영상 -->
+<section class="video">
+  <h2>뮤지컬 메이킹 영상</h2>
+  <div class="video-grid">
+    <video autoplay muted loop playsinline controls>
+      <source src="videos/video1.mp4" type="video/mp4">
     </video>
-  </section>
+    <video autoplay muted loop playsinline controls>
+      <source src="videos/video2.mp4" type="video/mp4">
+    </video>
+    <video autoplay muted loop playsinline controls>
+      <source src="videos/video3.mp4" type="video/mp4">
+    </video>
+    <video autoplay muted loop playsinline controls>
+      <source src="videos/video4.mp4" type="video/mp4">
+    </video>
 
-  <script>
-    function showSection(id, button) {
-      // 모든 섹션 숨기기
-      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
-      // 모든 버튼 비활성화
-      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
-      // 선택한 섹션만 보이기
-      document.getElementById(id).classList.add('active');
-      // 클릭한 버튼만 활성화
-      button.classList.add('active');
+  </div>
+</section>
+
+
+
+  <!-- 4. 출연진 -->
+  <section class="cast-section">
+    <h2>출연진</h2>
+    <p>"무대 위에서 하나님의 뜻을 노래합니다."</p>
+    <div class="cast">
+      <div class="cast-card"><img src="김훈서.jpg" alt=""><p>김훈서<br>어린 요셉</p></div>
+      <div class="cast-card"><img src="김영찬.jpg" alt=""><p>김영찬<br>어른 요셉</p></div>
+      <div class="cast-card"><img src="이윤이.jpg" alt=""><p>이윤이<br>서사자</p></div>
+      <div class="cast-card"><img src="박덕희.jpg" alt=""><p>박덕희<br>야곱</p></div>
+      <div class="cast-card"><img src="최시온.jpg" alt=""><p>최시온<br>르우벤</p></div>
+      <div class="cast-card"><img src="김희진.jpg" alt=""><p>양혜민<br>레위</p></div>
+      <div class="cast-card"><img src="이지호.jpg" alt=""><p>이지호<br>유다</p></div>
+      <div class="cast-card"><img src="김미혜.jpg" alt=""><p>김미혜<br>베냐민</p></div>
+      <div class="cast-card"><img src="이한빛.jpg" alt=""><p>이한빛<br>파라오</p></div>
+<!-- 🔹 Chatbot UI Styles -->
+
+
+<!-- 🔹 Chatbot UI -->
+<button class="rebible-chat-toggle" aria-label="챗봇 열기">💬 문의하기</button>
+<div class="rebible-chatbox" role="dialog" aria-label="REBIBLE 안내 챗봇">
+  <header>
+    <div class="title"><span class="dot"></span> <span>REBIBLE 안내 챗봇</span></div>
+    <button id="rebible-close" style="background:none;border:none;color:#9fb0c8;cursor:pointer;" aria-label="닫기">✕</button>
+  </header>
+  <div class="messages" id="rebible-messages">
+    <div class="msg bot">안녕하세요! 뮤지컬 <b>REBIBLE</b>입니다. 무엇을 도와드릴까요?</div>
+  </div>
+  <div class="rebible-suggestion" id="rebible-suggestions"></div>
+  <div class="input">
+    <input type="text" id="rebible-input" placeholder="예: 예매는 어떻게 하나요?" aria-label="질문 입력" />
+    <button class="send" id="rebible-send">전송</button>
+  </div>
+</div>
+
+<!-- 🔹 Chatbot Logic -->
+<script>
+  // 1) FAQ/KB 데이터 (페이지 정보 기반)
+  const LINKS = {
+    instagram: 'https://instagram.com/rebible_musical', // 👉 실제 URL로 교체
+    linktree: 'https://linktr.ee/rebible_musical',      // 👉 실제 URL로 교체
+    youtube: 'https://www.youtube.com/embed/hSMZ3utH8ww'
+  };
+
+  const KB = [
+    { id: 'date', q: ['언제','일시','시간','시작','상영','몇 시','date','time'],
+      a: '공연 일시는 <b>2025년 11월 12일(수) 19:30</b>입니다.' },
+    { id: 'venue', q: ['어디','장소','위치','주소','홀','학교','가서','venue'],
+      a: '공연 장소는 <b>서울신학대학교 존토마스홀</b>입니다.' },
+    { id: 'ticket', q: ['가격','비용','요금','무료','티켓','입장료','fee','price'],
+      a: '티켓은 <b>무료</b>이지만 <b>사전 예매 필수</b>입니다.' },
+    { id: 'booking', q: ['예매','예약','링크','구매','신청','방법','인스타','linktree','qr','예매처'],
+      a: `예매는 인스타그램 <b>@rebible_musical</b>의 <b>링크트리</b> 또는 <b>QR코드</b>로 진행해 주세요.
+          <div class="rebible-cta" style="margin-top:8px;">
+            <a href="${LINKS.instagram}" target="_blank" rel="noopener">인스타그램 열기</a>
+            <a href="${LINKS.linktree}" target="_blank" rel="noopener" style="margin-left:6px;">링크트리 열기</a>
+          </div>` },
+    { id: 'notice', q: ['공지','주의','입장','지각','도착','유의','안내사항','규정'],
+      a: '⚠ <b>중요 안내</b>: 공연 시작 후 <b>입장 불가</b>, 시작 <b>20분 전까지</b> 도착 권장, 예매는 무료지만 <b>사전 예매 필수</b>입니다.' },
+    { id: 'synopsis', q: ['줄거리','시놉시스','내용','요약','주제','스토리'],
+      a: '요셉의 삶을 통해 고난을 선으로 바꾸시는 하나님의 손길을 노래하는 작품입니다.' },
+    { id: 'video', q: ['영상','티저','유튜브','예고편','비디오','video'],
+      a: `티저 영상은 <a href="${LINKS.youtube}" target="_blank" rel="noopener">유튜브</a>에서 보실 수 있어요.` },
+    { id: 'cast', q: ['출연','배우','캐스트','출연진','누가','명단','cast'],
+      a: '주요 출연: 어린 요셉(김훈서), 어른 요셉(김영찬), 서사자(이윤이), 야곱(박덕희), 르우벤(최시온), 레위(양혜민), 유다(이지호), 베냐민(김미혜), 파라오(이한빛)' },
+    { id: 'parking', q: ['주차','차','parking'],
+      a: '주차 관련 정보는 현장 사정에 따라 다를 수 있어요. 예매 시 공지 또는 인스타그램 공지를 확인해 주세요.' },
+    { id: 'runtime', q: ['러닝타임','상영시간','길이','duration'],
+      a: '러닝타임은 공지 시 업데이트됩니다. 현재는 예매 페이지/인스타그램 공지를 참고해 주세요.' }
+  ];
+
+  // 2) 간단 유사도/매칭
+  const normalize = s => (s||'').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,'').trim();
+
+  function answerFor(query) {
+    const qn = normalize(query);
+    // 우선 규칙 기반
+    for (const item of KB) {
+      if (item.q.some(k => qn.includes(k))) return item.a;
     }
-  </script>
-</body>
-</html>
+    // 단어 유사 스코어(간단)
+    function score(item) {
+      return item.q.reduce((acc,k)=> acc + (qn.includes(k) ? 1 : 0), 0);
+    }
+    const ranked = [...KB].map(i=>({i, s: score(i)})).sort((a,b)=>b.s-a.s);
+    return ranked[0].s>0 ? ranked[0].i.a
+      : '다음 정보를 안내해 드려요: <b>일시, 장소, 티켓, 예매 방법, 중요 안내사항, 줄거리, 영상, 출연진</b>. 예: "예매는 어떻게 하나요?"';
+  }
+
+  // 3) UI 동작
+  const $toggle = document.querySelector('.rebible-chat-toggle');
+  const $box = document.querySelector('.rebible-chatbox');
+  const $close = document.getElementById('rebible-close');
+  const $messages = document.getElementById('rebible-messages');
+  const $input = document.getElementById('rebible-input');
+  const $send = document.getElementById('rebible-send');
+  const $suggestions = document.getElementById('rebible-suggestions');
+
+  const suggestions = [
+    '공연 일시가 언제예요?', '공연 장소가 어디예요?', '예매는 어떻게 해요?', '티켓 가격 알려주세요', '입장 관련 유의사항 있어요?', '출연진 알려줘요', '영상 링크 보여줘'
+  ];
+
+  function addMsg(html, who='bot') {
+    const div = document.createElement('div');
+    div.className = `msg ${who}`;
+    div.innerHTML = html;
+    $messages.appendChild(div);
+    $messages.scrollTop = $messages.scrollHeight;
+  }
+
+  function renderSuggestions() {
+    $suggestions.innerHTML = '';
+    suggestions.forEach(s=>{
+      const b = document.createElement('button');
+      b.textContent = s;
+      b.addEventListener('click', ()=>{
+        addMsg(s, 'user');
+        addMsg(answerFor(s), 'bot');
+      });
+      $suggestions.appendChild(b);
+    });
+  }
+
+  $toggle.addEventListener('click', ()=> {
+    const open = $box.style.display==='flex';
+    $box.style.display = open ? 'none' : 'flex';
+    if (!open) renderSuggestions();
+  });
+  $close.addEventListener('click', ()=> $box.style.display='none');
+  $send.addEventListener('click', ()=> {
+    const v = $input.value.trim();
+    if (!v) return;
+    addMsg(v, 'user');
+    addMsg(answerFor(v), 'bot');
+    $input.value='';
+    $input.focus();
+  });
+  $input.addEventListener('keydown', (e)=> { if (e.key==='Enter') $send.click(); });
+</script>
